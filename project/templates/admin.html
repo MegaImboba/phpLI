@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <h2>User List</h2>
+    {% for user in users %}
+        <p>{{ user.username }} - Admin: {{ 'Yes' if user.is_admin else 'No' }}</p>
+    {% endfor %}
+    <a href="/logout">Logout</a>
+</body>
+</html>

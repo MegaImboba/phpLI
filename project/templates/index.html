@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index Page</title>
+</head>
+<body>
+    <h1>Welcome to the User List</h1>
+    {% for user in users %}
+        <p>{{ user.username }} - Admin: {{ 'Yes' if user.is_admin else 'No' }}</p>
+    {% endfor %}
+    <a href="/login">Login</a>
+</body>
+</html>
