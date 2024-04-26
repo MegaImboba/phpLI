@@ -1,0 +1,9 @@
+Username: 12345, Password: $2y$10$fbbiU14NqpxXUy7.cCjPjO0T5F.Mt/IlsjgKm5o6P7CDH8pVY.GlO
+Username: 122, Password: 122
+Username: OR \'1\'=\'1, Password: 1
+Username: DROP TABLE users;, Password: 123
+Username: ; DROP TABLE users;--, Password: 123
+Username: \'; DROP TABLE users;--, Password: 123
+Username: 1234, Password: 1234
+Username: 1, Password: 1234
+Username: Admin, Password: 12415

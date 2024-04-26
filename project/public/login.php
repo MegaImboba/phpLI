@@ -27,11 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $error = "Your Login Name or Password is invalid";
     }
-}
+} include '../templates/login.html'
 ?>
-<form action="" method="post">
-  <label>Username :</label><input type="text" name="username" class="box"/><br /><br />
-  <label>Password :</label><input type="password" name="password" class="box" /><br/><br />
-  <input type="submit" value="Submit"/><br />
-</form>
+
 <?php if (!empty($error)) echo '<p>' . $error . '</p>'; ?>

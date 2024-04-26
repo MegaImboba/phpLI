@@ -1,0 +1,90 @@
+<?php
+include '../config/config.php';
+session_start();
+
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    header('Location: login.php'); // Перенаправляем не админов на страницу входа
+    exit;
+}
+
+echo "<h1>Admin Dashboard</h1>";
+echo "<a href='logout.php'>Logout</a><br><br>";
+
+// Подключение к БД
+$dbHost = 'localhost';
+$dbUser = 'root';
+$dbPassword = '';
+$dbName = 'myapp';
+$conn = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+function fetchMessages($conn) {
+    $query = "SELECT id, username, message FROM messages ORDER BY created_at DESC";
+    $result = $conn->query($query);
+    $messages = [];
+    while ($row = $result->fetch_assoc()) {
+        $messages[] = $row;
+    }
+    return $messages;
+}
+
+function deleteMessage($conn, $messageId) {
+    $messageId = intval($messageId);
+    $query = "DELETE FROM messages WHERE id = $messageId";
+    if ($conn->query($query)) {
+        return "Message deleted.";
+    } else {
+        return "Error deleting message: " . $conn->error;
+    }
+}
+
+function updateMessage($conn, $messageId, $messageText) {
+    $messageText = mysqli_real_escape_string($conn, $messageText);
+    $query = "UPDATE messages SET message = '$messageText' WHERE id = $messageId";
+    if ($conn->query($query)) {
+        return "Message updated.";
+    } else {
+        return "Error updating message: " . $conn->error;
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['deleteMessage'])) {
+        echo deleteMessage($conn, $_POST['messageId']);
+    } elseif (isset($_POST['updateMessage'])) {
+        echo updateMessage($conn, $_POST['messageId'], $_POST['message']);
+    }
+}
+
+$messages = fetchMessages($conn);
+?>
+
+<h2>Manage Messages</h2>
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Message</th>
+        <th>Actions</th>
+    </tr>
+    <?php foreach ($messages as $message): ?>
+    <tr>
+        <td><?php echo htmlspecialchars($message['username']); ?></td>
+        <td>
+            <form method="post">
+                <input type="hidden" name="messageId" value="<?php echo $message['id']; ?>">
+                <textarea name="message"><?php echo htmlspecialchars($message['message']); ?></textarea>
+                <button type="submit" name="updateMessage">Update</button>
+            </form>
+        </td>
+        <td>
+            <form method="post">
+                <input type="hidden" name="messageId" value="<?php echo $message['id']; ?>">
+                <button type="submit" name="deleteMessage">Delete</button>
+            </form>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+

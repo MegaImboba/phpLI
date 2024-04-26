@@ -2,47 +2,65 @@
 include '../config/config.php';
 session_start();
 
-// Проверка наличия сессии и прав администратора
-
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    header('Location: login.php'); // Перенаправляем не админов на страницу входа
+    exit;
+}
 
 echo "<h1>Admin Dashboard</h1>";
 echo "<a href='logout.php'>Logout</a><br><br>";
 
-// Функция для подсчета количества зарегистрированных пользователей
-function countUsers($conn) {
-    $query = "SELECT COUNT(id) AS total_users FROM users";
-    $result = $conn->query($query);
-    if ($result) {
-        $row = $result->fetch_assoc();
-        return $row['total_users'];
-    } else {
-        return "Error: " . $conn->error;
-    }
+// Подключение к БД
+$dbHost = 'localhost';
+$dbUser = 'root';
+$dbPassword = '';
+$dbName = 'myapp';
+$conn = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Функция для предоставления прав администратора пользователю
-function grantAdminRights($conn, $username) {
-    $username = $conn->real_escape_string($username);
-    $query = "UPDATE users SET is_admin = 1 WHERE username = '$username'";
+// Функции управления пользователями
+function fetchUsers($conn) {
+    $query = "SELECT id, username, is_admin FROM users";
+    $result = $conn->query($query);
+    $users = [];
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row;
+    }
+    return $users;
+}
+
+function updateUserAdminStatus($conn, $userId, $status) {
+    $userId = intval($userId);
+    $status = intval($status);
+    $query = "UPDATE users SET is_admin = $status WHERE id = $userId";
     if ($conn->query($query)) {
-        return "Admin rights granted to $username.";
+        return "User status updated.";
     } else {
         return "Error updating record: " . $conn->error;
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    echo grantAdminRights($conn, $username);
+function deleteUser($conn, $userId) {
+    $userId = intval($userId);
+    $query = "DELETE FROM users WHERE id = $userId";
+    if ($conn->query($query)) {
+        return "User deleted.";
+    } else {
+        return "Error deleting record: " . $conn->error;
+    }
 }
 
-$totalUsers = countUsers($conn);
-echo "<p>Total registered users: $totalUsers</p>";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['delete'])) {
+        echo deleteUser($conn, $_POST['userId']);
+    } elseif (isset($_POST['update'])) {
+        echo updateUserAdminStatus($conn, $_POST['userId'], $_POST['isAdmin']);
+    }
+}
+
+$users = fetchUsers($conn);
+include '../templates/admin.html'
 ?>
 
-<!-- Форма для предоставления прав администратора -->
-<form method="post" action="">
-    <label for="username">Enter username to grant admin rights:</label>
-    <input type="text" id="username" name="username" required>
-    <button type="submit">Grant Admin Rights</button>
-</form>

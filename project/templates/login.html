@@ -1,15 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MineAndCraft!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Minecraftia';
+            src: url('Minecraftia-Regular.ttf') format('truetype'); /* Путь к файлу шрифта, может потребоваться изменить */
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            font-family: 'Minecraftia', monospace; /* Minecraft style font */
+            margin: 0;
+            padding: 0;
+            background-color: #3b3b3b; /* Темный фон */
+            color: #ddd; /* Светлый текст */
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+            margin-top: 50px;
+        }
+        form {
+            background-color: #1E1E1E; /* Тёмный фон для формы */
+            display: inline-block;
+            padding: 20px;
+            border: 3px solid #4CAF50; /* Зелёная рамка */
+            box-shadow: 0 0 10px #4CAF50; /* Зелёный светящийся эффект */
+        }
+        input[type=text], input[type=password], button {
+            font-family: 'Minecraftia', monospace;
+            margin-top: 10px;
+            padding: 10px;
+            width: 200px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #4CAF50; /* Зелёная кнопка */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #367B25;
+        }
+        .back-button {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #4CAF50; /* Зелёная ссылка */
+            font-weight: bold;
+        }
+        .back-button:hover {
+            color: #367B25;
+        }
+    </style>
 </head>
 <body>
-    <h1>Login</h1>
-    <form action="/login" method="post">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
+    <div class="container">
+        <form action="login.php" method="post">
+            <p><input type="text" name="username" placeholder="Username" required></p>
+            <p><input type="password" name="password" placeholder="Password" required></p>
+            <p><button type="submit">Login</button></p>
+            <a href="index.php" class="back-button">Back to Home</a>
+        </form>
+    </div>
 </body>
 </html>

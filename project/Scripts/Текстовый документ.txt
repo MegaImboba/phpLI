@@ -1,0 +1,28 @@
+<script>
+let currentVideoPlayer = null; // Хранит текущий видеоплеер
+
+document.querySelectorAll('.game-box').forEach(box => {
+    box.addEventListener('click', function() {
+        var game = this.getAttribute('data-game');
+        fetch('getRandomVideo.php?game=' + game)
+            .then(response => response.json())
+            .then(data => {
+                if (currentVideoPlayer) {
+                    // Удаляем текущий видеоплеер, если он существует
+                    currentVideoPlayer.remove();
+                }
+
+                if (data.video) {
+                    // Создаем новый видеоплеер и добавляем его на страницу
+                    currentVideoPlayer = document.createElement('video');
+                    currentVideoPlayer.src = data.video;
+                    currentVideoPlayer.controls = true;
+                    currentVideoPlayer.autoplay = true;
+                    document.body.appendChild(currentVideoPlayer);
+                } else {
+                    alert(data.error);
+                }
+            });
+    });
+});
+</script>
